@@ -22,7 +22,6 @@ describe Bundler::Audit::CLI do
       end
 
       context "when update fails" do
-
         before { expect(Bundler::Audit::Database).to receive(:update!).and_return(false) }
 
         it "prints failure message" do
@@ -44,7 +43,16 @@ describe Bundler::Audit::CLI do
             expect(error.status).to eq(1)
           end
         end
+      end
 
+      context "when update fails due to missing git" do
+        before { expect(Bundler::Audit::Database).to receive(:update!).and_return(nil) }
+
+        it "prints failure message" do
+          expect do
+            subject.update
+          end.to output(/Skipping update/).to_stdout
+        end
       end
     end
 
